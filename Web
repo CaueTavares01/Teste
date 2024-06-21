@@ -1,2 +1,26 @@
 pip install beautifulsoup4 requests
-import
+import requests
+from bs4 import BeautifulSoup
+
+# Função para extrair preços de produtos do Mercado Livre
+def scrape_mercado_livre(search_query):
+    # Formatar a URL de busca
+    url = f'https://lista.mercadolivre.com.br/{search_query}'
+
+    # Fazer a requisição HTTP para obter o conteúdo da página
+    response = requests.get(url)
+
+    # Verificar se a requisição foi bem-sucedida
+    if response.status_code == 200:
+        # Criar um objeto BeautifulSoup e especificar o parser
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Encontrar todos os elementos que contêm os preços dos produtos
+        # Aqui assumimos que os preços estão em tags <span> com a classe 'price-tag-fraction'
+        prices = soup.find_all('span', class_='price-tag-fraction')
+        
+        # Extrair e imprimir os preços
+        for price in prices:
+            print(f'R$ {price.get_text()}')
+    else:
+        print(f'Erro ao acessar a página: {response
